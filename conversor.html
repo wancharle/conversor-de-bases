@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+    <title>Conversor de bases</title>
+    <meta charset="UTF-8"/>
+    <script src="d3/d3.min.js"></script>
+    <script src="d3/d3-selection-multi.min.js"></script>
+    <style>
+      td {width:60px; text-align: center;}
+      .casa-simbolo {background-color: blue; color: white;}
+      .casa-valor {background-color:rgb(207,216,232)}
+      .casa-conta {background-color: rgb(233,237,255)}
+    </style>
+</head>
+<body onload="calcula()">
+
+    <h1>Conversão para base decimal</h1>
+      <label for="inputNumero">Informe um número </label><input value="42" type="text" text="543" id="inputNumero" onchange="limpa();calcula()">
+      <label for="inputBase">informe a base</label><select id="inputBase" onchange="limpa();calcula();">
+        <option value="10">base decimal</option>
+        <option value="2">base binária</option>
+        <option value="8">base octal</option>
+        <option value="16">base hexadecimal</option>
+      </select>
+
+      <p>Considerando o quadro abaixo:</p>
+      <table>
+        <tr class="casa-simbolo"> </tr>
+        <tr class="casa-conta"> </tr>
+        <tr class="casa-valor"> </tr>
+      </table>
+      <p>Temos que o resultado da conversão é: </p>
+      <div id="somacasas"></div>
+  
+<script>
+// http://blog.techhysahil.com/svg/how-to-center-text-in-svg-shapes/
+// http://www.d3noob.org/2014/02/attributes-in-d3js.html
+var SIMBOLOS = "0123456789ABCDEF"
+
+function  limpa(){
+  d3.select("tr.casa-simbolo").selectAll("td").data([],function(d){return d}).exit().remove()
+  d3.select("tr.casa-valor").selectAll("td").data([],function(d){return d}).exit().remove()
+  d3.select("tr.casa-conta").selectAll("td").data([],function(d){return d}).exit().remove()
+}                                    
+
+function calcula(data,base){
+  base = inputBase.value
+  data = inputNumero.value;
+  var valor = 0;
+  d3.select("tr.casa-simbolo").selectAll("td").data(data,function(d){return d})
+      .enter().append('td').text(function(d,i) { return d  })
+
+  d3.select("tr.casa-valor").selectAll("td").data(data,function(d){return d})
+      .enter().append('td').text(function(d,i) { 
+          var valorCasa = calculaValorCasa(d,base,data.length - i -1)
+          valor = valor + valorCasa;
+          return valorCasa
+        })
+
+  d3.select("tr.casa-conta").selectAll("td").data(data,function(d){return d})
+      .enter().append('td').html(function(d,i){ 
+        var posicao;
+        posicao = data.length - i - 1;
+        return "<math><mn>"+d+"</mn><mo>*</mo><msup><mn>"+base+"</mn><mn>"+posicao+"</mn></msup></math>"
+      });   
+
+
+
+var texto = "<math><msub><mn>"+data+"</mn><mn>"+base+"</mn></math> = "
+  texto += data.split('').map(function(n,i,ar){ return calculaValorCasa(n,base,ar.length - i -1) }).join(' + ')
+  texto += " = <math><msub><mn>"+valor+"</mn><mn>"+10+"</mn></math>"
+  texto += "<br/><br/> Ou seja, "+data+" em base " + base + " é igual a " + valor + " em base decimal"
+  somacasas.innerHTML = texto 
+}
+
+function calculaValorCasa(simbolo, base, posicao){
+    var valorSimbolo = SIMBOLOS.indexOf(simbolo.toUpperCase())
+    return valorSimbolo*(base**posicao)
+}
+
+// TODO: adicionar conversao de decimal para binario
+// TODO: bloquear conversão com simbolos fora do intervalo da base (exemplos: numeros maior que 1 em base binaria, > 7 em octal, > 15 em hexa)
+// TODO: adicionar suporte a mudança entre bases usando logarítimo
+// TODO: adicionar soma binária
+// TODO: adicionar subtração binária
+// TODO: adicionar multiplicação binária
+// TODO: adicionar divisão (tanto binária como decimal)
+</script>  
+</body>
+</HTML>
