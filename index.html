@@ -5,33 +5,66 @@
     <meta charset="UTF-8"/>
     <script src="d3/d3.min.js"></script>
     <script src="d3/d3-selection-multi.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+ 
     <style>
-      td {width:60px; text-align: center;}
+      #converteDecimal td {border: 1px solid white;1px;width:60px; text-align: center;}
       .casa-simbolo {background-color: blue; color: white;}
       .casa-valor {background-color:rgb(207,216,232)}
       .casa-conta {background-color: rgb(233,237,255)}
     </style>
 </head>
 <body onload="calcula()">
+    <section class="hero is-info">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">
+              Conversor de bases numéricas
+            </h1>
+            <h2 class="subtitle">
+              Esta pagina fornece alguns recursos automáticos para conversão entre bases numéricas
+            </h2>
+          </div>
+        </div>
+      </section>
 
-    <h1>Conversão para base decimal</h1>
-      <label for="inputNumero">Informe um número </label><input value="42" type="text" text="543" id="inputNumero" onchange="limpa();calcula()">
-      <label for="inputBase">informe a base</label><select id="inputBase" onchange="limpa();calcula();">
-        <option value="10">base decimal</option>
-        <option value="2">base binária</option>
-        <option value="8">base octal</option>
-        <option value="16">base hexadecimal</option>
-      </select>
+    <section class="section">
+        <div class="container">
+          <h1 class="title">Conversão para base decimal</h1>
+          <div class="content">
+          <p>Informe um número e sua base a seguir para realizar a conversão:</p>
+                <div class="field has-addons">
+                    <p class="control"><span class="select"><select id="inputBase" onchange="limpa();calcula();">
+                    <option value="10">base decimal</option>
+                    <option value="2">base binária</option>
+                    <option value="8">base octal</option>
+                    <option value="16">base hexadecimal</option>
+                  </select></span></p>
+                    <p class="control"><input class="input" value="42" type="text" text="543" id="inputNumero" onchange="limpa();calcula()"></p>
+                </div>
+        <p>Considerando o quadro abaixo:</p>
+        <table id="converteDecimal">
+          <tr class="casa-simbolo"> </tr>
+          <tr class="casa-conta"> </tr>
+          <tr class="casa-valor"> </tr>
+        </table>
+        <p>Temos que o resultado da conversão é: </p>
+        <p id="somacasas"></p>
+        </div> <!-- fim content -->
+        </div>
+      </section>
 
-      <p>Considerando o quadro abaixo:</p>
-      <table>
-        <tr class="casa-simbolo"> </tr>
-        <tr class="casa-conta"> </tr>
-        <tr class="casa-valor"> </tr>
-      </table>
-      <p>Temos que o resultado da conversão é: </p>
-      <div id="somacasas"></div>
-  
+      <footer class="footer">
+          <div class="container">
+            <div class="content has-text-centered">
+              <p>
+                <strong>Conversor de Bases</strong> construído por <a href="https://github.com/wancharle">Wancharle S. Quirino</a>.
+              </p>
+            </div>
+          </div>
+        </footer>
 <script>
 // http://blog.techhysahil.com/svg/how-to-center-text-in-svg-shapes/
 // http://www.d3noob.org/2014/02/attributes-in-d3js.html
