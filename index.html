@@ -34,25 +34,30 @@
         <div class="container">
           <h1 class="title">Conversão para base decimal</h1>
           <div class="content">
-          <p>Informe um número e sua base a seguir para realizar a conversão:</p>
+          <p>Informe o número e a base do número para realizar a conversão para base decimal:</p>
                 <div class="field has-addons">
+
+                    <p class="control"><input placeholder="número" class="input" value="" type="text" text="543" id="inputNumero" onkeyup="atualiza()" onchange="limpa();calcula()"></p>
+
                     <p class="control"><span class="select"><select id="inputBase" onchange="limpa();calcula();">
                     <option value="10">base decimal</option>
                     <option value="2">base binária</option>
                     <option value="8">base octal</option>
                     <option value="16">base hexadecimal</option>
                   </select></span></p>
-                    <p class="control"><input class="input" value="42" type="text" text="543" id="inputNumero" onchange="limpa();calcula()"></p>
+                  <p id="simbs"></p>
                 </div>
-        <p>Considerando o quadro abaixo:</p>
+
+        <p class="hide">Convertendo <span id="legenda"></span> para base decimal temos que o resultado é: </p>
+        <p class="hide" id="somacasas"></p>
+ 
+        <p class="hide">Observe o quadro abaixo para entender como foi feito a conversão:</p>
         <table id="converteDecimal">
           <tr class="casa-simbolo"> </tr>
           <tr class="casa-conta"> </tr>
           <tr class="casa-valor"> </tr>
         </table>
-        <p>Temos que o resultado da conversão é: </p>
-        <p id="somacasas"></p>
-        </div> <!-- fim content -->
+       </div> <!-- fim content -->
         </div>
       </section>
 
@@ -76,9 +81,39 @@ function  limpa(){
   d3.select("tr.casa-conta").selectAll("td").data([],function(d){return d}).exit().remove()
 }                                    
 
+function atualiza(){
+    
+    legenda.innerHTML = inputNumero.value+" na base "+inputBase.value
+    limpa();calcula();
+    }
+function algarismoForaDaBase(algarismo,base){
+    var ind;
+    ind = SIMBOLOS.indexOf(algarismo) + 1
+    return (ind == 0) || (ind  > base)
+}
+function check(numero,base){
+    
+    for (i=0;i<numero.length;i++){
+        if (algarismoForaDaBase(numero[i],base)){
+            inputNumero.value = ""
+            return ""
+        }
+    }
+    return numero 
+}
+
 function calcula(data,base){
   base = inputBase.value
-  data = inputNumero.value;
+  data = inputNumero.value.toUpperCase();
+  data = check(data,base)
+  simbs.innerHTML = "<span style='margin-left:20px'>Algarismos: "+ SIMBOLOS.slice(0,base).split("").join(", ")+"</span>";
+
+  if (data == ""){
+    d3.selectAll("p.hide").style("visibility","hidden");     
+    return
+  }else{
+    d3.selectAll("p.hide").style("visibility","visible");     
+      }
   var valor = 0;
   d3.select("tr.casa-simbolo").selectAll("td").data(data,function(d){return d})
       .enter().append('td').text(function(d,i) { return d  })
@@ -96,7 +131,6 @@ function calcula(data,base){
         posicao = data.length - i - 1;
         return "<math><mn>"+d+"</mn><mo>*</mo><msup><mn>"+base+"</mn><mn>"+posicao+"</mn></msup></math>"
       });   
-
 
 
 var texto = "<math><msub><mn>"+data+"</mn><mn>"+base+"</mn></math> = "
